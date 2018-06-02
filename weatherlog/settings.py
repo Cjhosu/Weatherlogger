@@ -25,7 +25,7 @@ SECRET_KEY = '))e5^_vr5uq7=8v@#_^9_-)uwt6!2$up9j-%6ftzupsyul#jp6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [https://weatherlogger.herokuapp.com/, 127.0.0.1:8000]
 
 
 # Application definition
