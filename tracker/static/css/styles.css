@@ -1,0 +1,93 @@
+
+.sidebar-nav {
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+}
+
+#calendar table {
+    width: 95%;
+    margin: auto;
+}
+
+#content {
+    position: relative;
+}
+#content img {
+    width: 10%;
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    z-index:1001;
+}
+
+#calendar table tr th {
+    text-align: center;
+    font-size: 16px;
+    background-color: #316497;
+    color: #99ccff;
+}
+
+#calendar table tr td {
+    width: 10%;
+    border: 1px solid #555;
+    vertical-align: top;
+    height: 120px;
+    padding: 2px;
+}
+
+#calendar td.niceday {
+    background-color: #eee;
+}
+
+#calendar td.noday {
+    background-color: #eee;
+}
+
+#calendar td.filled {
+    background-color: #FFF6E1;
+}
+
+#calendar td.nice {
+    background-color: #FFCC66;
+}
+
+#calendar td.today {
+    border: 4px solid #316497;
+}
+
+#calendar .dayNumber {
+    font-size: 16px !important;
+    font-weight: bold;
+}
+
+#calendar a {
+    font-size: 10px;
+}
+
+.inline {
+    display: inline;
+    padding: 0px;
+}
+
+#fltlft{
+    float: left;
+}
+
+#fltrt{
+    float: right;
+}
+
+.btmlft {
+    vertical-align: bottom;
+    margin: 100px;
+}
+
+.padded {
+    margin: 10px;
+}
+
+#createJourn{
+    vertical-align: center;
+}
+

@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<h3> Logged Weather for {{daterec.log_date}} </h3>
+<a href="{% url 'update_date_record' daterec.pk %}"<button class="btn btn-default btn-sm" type="button" style="color: #000000">Update</button></a>
+<br>
+<h4>
+<p><strong> High Temp:</strong> {{ daterec.high_temp }}</p>
+<p><strong> Low Temp:</strong> {{ daterec.low_temp }}</p>
+<p><strong> Cloud Cover:</strong> {{ daterec.cloud_cover_type }}</p>
+{% if prerec != None %}
+<p><strong> Type of Precipitation:</strong> {{ prerec.precip_type }}</p>
+<p><strong> Volume In Inches:</strong> {{ prerec }}</p>
+{% endif %}
+{% if noterec != None %}
+<p><strong> Notes:</strong> {{noterec}}</p>
+{% endif %}
+<a href="{% url 'create_date_record' journal.pk %}">Back to {{journal}}
+{% endblock %}

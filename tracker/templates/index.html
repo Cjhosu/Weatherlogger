@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<br>
+<h3> Welcome to the WeatherLog Journal Tracker</h3>
+<h5> Select your journal below to log entries or use the link in the sidebar to create a new one</h5>
+<br>
+<hr>
+<h2> Journals </h2>
+
+{% if journal_list %}
+    {% for journ in journal_list %}
+<li>
+    <a href="create_date_record/{{journ.id}}">{{journ}}</a>
+{% endfor %}
+</li>
+    {% else %} There is nothing here
+    {% endif %}
+
+
+
+
+{% endblock %}
+

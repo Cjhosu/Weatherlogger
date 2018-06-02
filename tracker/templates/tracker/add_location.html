@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<br></br>
+    <h2> Add a location </h2>
+
+<form method="POST" class="post-form">{% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="submit" value="Submit"<button class="btn btn-default btn-sm" type="button" style="color:#000000"/></button> <a href="{% url 'index' %}"<button class="btn btn-default btn-sm" type="button" style="color: #000000">Cancel</button></a>
+</form>
+{% endblock %}
+~

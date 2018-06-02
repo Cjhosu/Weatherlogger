@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<br>
+</br>
+ <h3> {{journref}} </h3>
+    <h5> Pick a Date and Log the Weather </h5>
+<a href="{% url 'calendar' journref.pk year month %}">Calendar</a>
+<br>
+<h4>
+<hr>
+<form method="POST" class="post-form">{% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="submit" value="Submit"<button class="btn btn-default btn-sm" type="button" style="color:#000000"/></button> <a href="{% url 'index' %}"<button class="btn btn-default btn-sm" type="button" style="color: #000000">Cancel</button></a>
+</form>
+<hr>
+<br>
+</h4>
+<h5>
+{% if date_record_list %}
+    {% for daterec in date_record_list %}
+<li>
+       <a href="{% url 'date_record' daterec.pk %}">{{ daterec }}</a>
+</li>
+    {% endfor %}
+    {% else %} There is nothing here
+{% endif %}
+
+</h5>
+{% endblock %}
