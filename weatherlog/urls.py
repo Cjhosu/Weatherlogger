@@ -18,7 +18,6 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.conf.urls import include
-from django.urls import path
 from django.views.generic import RedirectView
 
 urlpatterns = [
@@ -26,15 +25,15 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path('tracker/', include('tracker.urls')),
+    url(r'^tracker/', include('tracker.urls')),
 ]
 
 urlpatterns += [
-    path('', RedirectView.as_view(url='/tracker/')),
+    url(r'^$', RedirectView.as_view(url='/tracker/')),
 ]
 
 urlpatterns += [
-    path('accounts/', include('django.contrib.auth.urls')),
+    url(r'^accounts/', include('django.contrib.auth.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
