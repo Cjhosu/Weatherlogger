@@ -10,6 +10,9 @@
 <br>
 <h4>
 <hr>
+{% if dupe != None %}
+<h4 style="color:#ff0000"> There is already a record for that date! </h4>
+{% endif %}
 <form method="POST" class="post-form">{% csrf_token %}
     {{ form.as_p }}
 
