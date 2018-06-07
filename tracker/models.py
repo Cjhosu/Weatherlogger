@@ -43,6 +43,8 @@ class Date_record(models.Model):
     journal = models.ForeignKey(Journal, on_delete=models.SET_NULL, null=True)
     def __str__(self):
       return str(self.log_date)
+    class Meta:
+        unique_together = ('log_date' , 'journal')
 
 class Precip_record(models.Model):
     date_record = models.ForeignKey(Date_record, on_delete=models.SET_NULL, null=True)
