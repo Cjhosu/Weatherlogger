@@ -3,13 +3,14 @@
 {% block content %}
 
 <br></br>
-<strong>UPDATE LOG FOR {{dateref.log_date}}</strong>
+<strong>UPDATE LOG FOR {{dateinst.log_date}}</strong>
 <br>
 <br>
 
 <form method="POST" class="post-form">{% csrf_token %}
     {{ form.as_p }}
+    {{ precipform.as_p }}
     {{noteform.as_p}}
-    <input type="submit" value="Submit"<button class="btn btn-default btn-sm" type="button" style="color:#000000"/></button> <a href="{% url 'date_record' dateref.pk %}"<button class="btn btn-default btn-sm" type="button" style="color: #000000">Cancel</button></a>
+    <input type="submit" value="Submit"<button class="btn btn-default btn-sm" type="button" style="color:#000000"/></button> <a href="{% url 'date_record' pk %}"<button class="btn btn-default btn-sm" type="button" style="color: #000000">Cancel</button></a>
 </form>
 {% endblock %}

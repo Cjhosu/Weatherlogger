@@ -1,4 +1,4 @@
-from .forms import SignUpForm, AddLocationForm, CreateJournalForm, DateRecordForm, UpdateDateRecordForm, DateRecordNotesForm
+from .forms import SignUpForm, AddLocationForm, CreateJournalForm, DateRecordForm, UpdateDateRecordForm, DateRecordNotesForm, UpdatePrecipRecordForm
 from .models import User, Location, Journal, Date_record, Precip_record, Date_record_note
 from calendar import HTMLCalendar, monthrange
 from datetime import datetime, date
@@ -121,59 +121,6 @@ def CreateDateRecord(request,pk):
             )
 
 @login_required
-def UpdateDateRecordView(request,pk):
-    dateref = get_object_or_404(Date_record, pk=pk)
-    try:
-        prerec = get_object_or_404(Precip_record, date_record_id = pk)
-    except:
-        prerec = None
-    try:
-        noterec = get_object_or_404(Date_record_note, date_record_id = pk)
-    except:
-        noterec = None
-    if request.method == 'POST':
-        form = UpdateDateRecordForm(request.POST)
-        if form.is_valid():
-            if form.cleaned_data['high_temp'] != None:
-                dateref.high_temp = form.cleaned_data['high_temp']
-            if form.cleaned_data['low_temp'] != None:
-                dateref.low_temp = form.cleaned_data['low_temp']
-            if form.cleaned_data['cloud_cover_type'] != None:
-                dateref.cloud_cover_type = form.cleaned_data['cloud_cover_type']
-            dateref.save()
-            if prerec != None:
-                if form.cleaned_data['precip_type'] != None:
-                     Precip_record.objects.filter(date_record_id = pk).update(precip_type=form.cleaned_data['precip_type'])
-                if form.cleaned_data['volume_in_inches'] != None:
-                     Precip_record.objects.filter(date_record_id = pk).update(volume_in_inches=form.cleaned_data['volume_in_inches'])
-            else:
-                if form.cleaned_data['precip_type'] != None or form.cleaned_data['volume_in_inches'] != None:
-                    pr = Precip_record()
-                    pr.date_record_id = pk
-                    pr.precip_type = form.cleaned_data['precip_type']
-                    pr.volume_in_inches = form.cleaned_data['volume_in_inches']
-                    pr.save()
-        noteform = DateRecordNotesForm(request.POST)
-        if noteform.is_valid():
-            if noterec != None:
-                if noteform.cleaned_data['notes'] != '':
-                    Date_record_note.objects.filter(date_record_id = pk).update(note=noteform.cleaned_data['notes'])
-            else:
-                if noteform.cleaned_data['notes'] != '':
-                    drn = Date_record_note()
-                    drn.date_record_id = pk
-                    drn.note = noteform.cleaned_data['notes']
-                    drn.save()
-            return HttpResponseRedirect('/tracker/date_record/'+ pk)
-    else:
-        form = UpdateDateRecordForm()
-        noteform = DateRecordNotesForm()
-    return render(request,
-            'tracker/update_date_record.html'
-            ,{'form':form, 'dateref':dateref, 'noteform':noteform}
-            )
-
-@login_required
 def DateRecordDetailView(request,pk):
     daterec = get_object_or_404(Date_record, pk=pk)
     journal = get_object_or_404(Journal, pk = daterec.journal_id)
@@ -190,8 +137,65 @@ def DateRecordDetailView(request,pk):
              {'daterec' :daterec , 'prerec' :prerec, 'journal' :journal, 'noterec':noterec},
             )
 
-class WeatherCalendar(LoginRequiredMixin,HTMLCalendar):
+def is_precip_record(request, pk):
+    try:
+        prerec = get_object_or_404(Precip_record , date_record_id = pk)
+    except:
+        prerec = None
+    if prerec != None:
+        return True
 
+def is_note_record(request, pk):
+    try:
+        noterec = get_object_or_404(Date_record_note , date_record_id = pk)
+    except:
+        noterec = None
+    if noterec != None:
+        return True
+
+class UpdateDateRecordView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        dateinst = get_object_or_404(Date_record, pk=pk)
+        form = UpdateDateRecordForm(instance=dateinst)
+        if is_precip_record(request, pk) != True:
+            precipform = UpdatePrecipRecordForm()
+        else:
+            prerec = get_object_or_404(Precip_record , date_record_id=pk)
+            precipform = UpdatePrecipRecordForm(initial={'precip_type': prerec.precip_type, 'volume_in_inches':prerec.volume_in_inches})
+        if is_note_record(request, pk) != True:
+            noteform = DateRecordNotesForm()
+        else:
+            noterec = get_object_or_404(Date_record_note, date_record_id=pk)
+            noteform = DateRecordNotesForm(initial={'notes':noterec.note})
+        return render(request,'tracker/update_date_record.html' ,{'form':form,'precipform':precipform, 'noteform':noteform,'dateinst':dateinst, 'pk':pk })
+
+    def post(self, request, pk):
+        dateinst = get_object_or_404(Date_record, pk=pk)
+        form = UpdateDateRecordForm(request.POST, instance=dateinst)
+        precipform = UpdatePrecipRecordForm(request.POST)
+        noteform = DateRecordNotesForm(request.POST)
+        if form.is_valid() and precipform.is_valid() and noteform.is_valid():
+            if is_precip_record(request, pk) != True and precipform.cleaned_data['precip_type'] != None:
+                precip = Precip_record()
+                precip.date_record_id = pk
+                precip.save()
+            if is_precip_record(request, pk) == True:
+                precip = Precip_record.objects.get(date_record_id = pk)
+                precip.precip_type = precipform.cleaned_data['precip_type']
+                precip.volume_in_inches = precipform.cleaned_data['volume_in_inches']
+                precip.save()
+            if is_note_record(request, pk) != True and noteform.cleaned_data['notes'] != '':
+                note = Date_record_note()
+                note.date_record_id = pk
+                note.save()
+            if is_note_record(request, pk) == True:
+                note = Date_record_note.objects.get(date_record_id = pk)
+                note.note = noteform.cleaned_data['notes']
+                note.save()
+            form.save()
+            return HttpResponseRedirect('/tracker/date_record/'+ pk)
+
+class WeatherCalendar(LoginRequiredMixin,HTMLCalendar):
     def __init__(self, weather):
         super(WeatherCalendar, self).__init__()
         self.weather = self.group_by_day(weather)
