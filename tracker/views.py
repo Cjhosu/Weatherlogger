@@ -124,13 +124,13 @@ def CreateDateRecord(request,pk):
 def DateRecordDetailView(request,pk):
     daterec = get_object_or_404(Date_record, pk=pk)
     journal = get_object_or_404(Journal, pk = daterec.journal_id)
-    try:
-        prerec = get_object_or_404(Precip_record, date_record_id = pk)
-    except:
+    if is_precip_record(request, pk) == True:
+        prerec = Precip_record.objects.get(date_record_id = pk)
+    else:
         prerec = None
-    try:
-        noterec = get_object_or_404(Date_record_note , date_record_id = pk)
-    except:
+    if is_note_record(request, pk) == True:
+        noterec = Date_record_note.objects.get(date_record_id = pk)
+    else:
         noterec = None
     return render(request,
             'tracker/date_record.html',
@@ -175,23 +175,19 @@ class UpdateDateRecordView(LoginRequiredMixin, View):
         precipform = UpdatePrecipRecordForm(request.POST)
         noteform = DateRecordNotesForm(request.POST)
         if form.is_valid() and precipform.is_valid() and noteform.is_valid():
-            if is_precip_record(request, pk) != True and precipform.cleaned_data['precip_type'] != None:
-                precip = Precip_record()
-                precip.date_record_id = pk
-                precip.save()
-            if is_precip_record(request, pk) == True:
-                precip = Precip_record.objects.get(date_record_id = pk)
-                precip.precip_type = precipform.cleaned_data['precip_type']
-                precip.volume_in_inches = precipform.cleaned_data['volume_in_inches']
-                precip.save()
-            if is_note_record(request, pk) != True and noteform.cleaned_data['notes'] != '':
-                note = Date_record_note()
-                note.date_record_id = pk
-                note.save()
-            if is_note_record(request, pk) == True:
-                note = Date_record_note.objects.get(date_record_id = pk)
-                note.note = noteform.cleaned_data['notes']
-                note.save()
+            if precipform.cleaned_data['precip_type'] != None:
+                obj, created = Precip_record.objects.update_or_create(
+                    date_record_id = pk,
+                    defaults = {
+                    'precip_type':precipform.cleaned_data['precip_type'],
+                    'volume_in_inches':precipform.cleaned_data['volume_in_inches']
+                    })
+            if  is_note_record(request, pk) == True or noteform.cleaned_data['notes'] != '':
+                obj, created = Date_record_note.objects.update_or_create(
+                    date_record_id = pk,
+                    defaults = {
+                    'note':noteform.data['notes']
+                    })
             form.save()
             return HttpResponseRedirect('/tracker/date_record/'+ pk)
 
