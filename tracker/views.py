@@ -121,7 +121,7 @@ def CreateDateRecord(request,pk):
         form = DateRecordForm()
     return render(request,
             'tracker/create_date_record.html'
-            ,{'form' : form, 'date_record_list':date_record_list, 'journref':journref, 'year':year, 'month':month}
+            ,{'form' : form, 'records':records, 'journref':journref, 'year':year, 'month':month}
             )
 
 @login_required

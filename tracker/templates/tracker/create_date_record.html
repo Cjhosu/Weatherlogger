@@ -28,8 +28,6 @@
        <a href="{% url 'date_record' daterec.pk %}">{{ daterec }}</a>
 </li>
     {% endfor %}
-    {% else %} There is nothing here
-{% endif %}
 <div class="pagination">
     <span class="step-links">
         {% if records.has_previous %}
@@ -45,5 +43,7 @@
         {% endif %}
     </span>
 </div>
+    {% else %} There is nothing here
+{% endif %}
 </h5>
 {% endblock %}
