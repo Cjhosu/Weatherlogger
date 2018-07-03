@@ -22,8 +22,8 @@
 <br>
 </h4>
 <h5>
-{% if date_record_list %}
-    {% for daterec in date_record_list %}
+{% if records %}
+    {% for daterec in records %}
 <li>
        <a href="{% url 'date_record' daterec.pk %}">{{ daterec }}</a>
 </li>

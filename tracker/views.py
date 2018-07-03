@@ -82,7 +82,7 @@ def CreateDateRecord(request,pk):
     date_record_list = Date_record.objects.filter(journal_id= pk).order_by('-log_date')
     paginator = Paginator(date_record_list, 30)
     page = request.GET.get('page')
-    records = paginator.page(page)
+    records = paginator.get_page(page)
     now = datetime.now()
     year = now.year
     month = now.month
