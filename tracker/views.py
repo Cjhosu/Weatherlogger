@@ -79,7 +79,7 @@ def CreateJournal(request):
 @login_required
 def CreateDateRecord(request,pk):
     journref = get_object_or_404(Journal, pk=pk)
-    date_record_list=Date_record.objects.filter(journal_id= pk).order_by('-log_date')
+    date_record_list = Date_record.objects.filter(journal_id= pk).order_by('-log_date')
     paginator = Paginator(date_record_list, 30)
     page = request.GET.get('page')
     records = paginator.get_page(page)
