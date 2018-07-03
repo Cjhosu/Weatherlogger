@@ -30,6 +30,20 @@
     {% endfor %}
     {% else %} There is nothing here
 {% endif %}
+<div class="pagination">
+    <span class="step-links">
+        {% if records.has_previous %}
+            <a href="?page={{ records.previous_page_number }}">&lArr;</a>
+        {% endif %}
 
+        <span class="current">
+            Page {{ records.number }} of {{ records.paginator.num_pages }}.
+        </span>
+
+        {% if records.has_next %}
+            <a href="?page={{ records.next_page_number }}">&rArr;</a>
+        {% endif %}
+    </span>
+</div>
 </h5>
 {% endblock %}
