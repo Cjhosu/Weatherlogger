@@ -18,12 +18,13 @@ class Journal(models.Model):
     def __str__(self):
       return self.description
 
-class Group(models.Model):
-    description = models.CharField(max_length=50)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+class Share(models.Model):
+    shared_with_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     journal = models.ForeignKey(Journal, on_delete=models.SET_NULL, null=True)
     def __str__(self):
       return self.description
+    class Meta:
+        unique_together =('shared_with_user', 'journal')
 
 class Cloud_cover_type(models.Model):
     description = models.CharField(max_length=25)
