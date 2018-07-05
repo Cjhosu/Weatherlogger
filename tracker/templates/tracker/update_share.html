@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<br></br>
+    <h2> Pick a journal and a user to share it with. </h2>
+<br>
+<br>
+<form method="POST" class="post-form">{% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="submit" value="Share"<button class="btn btn-default btn-sm" type="button" style="color:#000000"/></button> <a href="{% url 'index' %}"<button class="btn btn-default btn-sm" type="button" style="color: #000000">Cancel</button></a>
+</form>
+{% if dupe != None %}
+<h4 style="color:#ff0000"> {{dupe}}  </h4>
+{% endif %}
+{% endblock %}

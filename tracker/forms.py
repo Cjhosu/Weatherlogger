@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Location, Journal, Date_record, Cloud_cover_type, Precip_type, Date_record_note
+from .models import Location, Journal, Date_record, Cloud_cover_type, Precip_type, Date_record_note, User
 from django.contrib.auth.forms import UserCreationForm
 
 class SignUpForm(UserCreationForm):
@@ -49,3 +49,16 @@ class UpdatePrecipRecordForm(forms.Form):
 class DateRecordNotesForm(forms.Form):
     notes = forms.CharField(widget=forms.Textarea, required = False)
 
+class UpdateShareForm(forms.Form):
+    journal = forms.ChoiceField(choices = [ ])
+    user = forms.ChoiceField(choices = [ ])
+    def __init__(self, uid, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        journ_choices = [ ]
+        user_choices = [ ]
+        for user_options in User.objects.exclude(id=uid):
+            user_choices.append((user_options.id , user_options.username))
+        self.fields['user'].choices = user_choices
+        for journ_options in Journal.objects.filter(user_id=uid):
+            journ_choices.append((journ_options.id , journ_options.description))
+        self.fields['journal'].choices = journ_choices

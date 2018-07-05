@@ -5,8 +5,8 @@
 <h5> Select your journal below to log entries or use the link in the sidebar to create a new one</h5>
 <br>
 <hr>
-<strong><h4 style="color:#336600">  V 1.0.4 Release Notes </h4>
-<h5 style="color:#339900"> New Feature : Pagination on record creation page</h5>
+<strong><h4 style="color:#336600">  V 1.1.0 Release Notes </h4>
+<h5 style="color:#339900"> New Features : Sharing and pagination on record creation page</h5>
 <hr>
 <h2> Journals </h2>
 
@@ -19,8 +19,18 @@
     {% else %} There is nothing here
     {% endif %}
 
+<br>
 
+<h2> Shared Journals </h2>
 
+{% if shared_list %}
+    {% for journ in shared_list %}
+<li>
+    <a href="create_date_record/{{journ.id}}">{{journ}}</a>
+{% endfor %}
+</li>
+    {% else %} There is nothing here
+    {% endif %}
 
 {% endblock %}
 

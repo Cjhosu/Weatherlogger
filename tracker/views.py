@@ -1,6 +1,6 @@
-from .forms import SignUpForm, AddLocationForm, CreateJournalForm, DateRecordForm, UpdateDateRecordForm, DateRecordNotesForm, UpdatePrecipRecordForm
+from .forms import SignUpForm, AddLocationForm, CreateJournalForm, DateRecordForm, UpdateDateRecordForm, DateRecordNotesForm, UpdatePrecipRecordForm, UpdateShareForm
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from .models import User, Location, Journal, Date_record, Precip_record, Date_record_note
+from .models import User, Location, Journal, Date_record, Precip_record, Date_record_note, Share
 from calendar import HTMLCalendar, monthrange
 from datetime import datetime, date
 from django.contrib.auth import login, authenticate
@@ -18,12 +18,12 @@ from itertools import groupby
 class IndexView(LoginRequiredMixin, View):
     def get(self, request):
         journal_list=Journal.objects.filter(user=request.user)
+        shared_list = Journal.objects.filter(share__shared_with_user=request.user)
         return render(
             request,
             'index.html',
-            context={'journal_list' :journal_list}
+            context={'journal_list' :journal_list , 'shared_list' :shared_list, }
     )
-
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -194,6 +194,27 @@ class UpdateDateRecordView(LoginRequiredMixin, View):
                     })
             form.save()
             return HttpResponseRedirect('/tracker/date_record/'+ pk)
+
+def UpdateShare(request):
+    if request.method == 'POST':
+      form = UpdateShareForm(request.user.id, request.POST)
+      if form.is_valid():
+          share = Share()
+          journalid = form.cleaned_data['journal']
+          sharedid = form.cleaned_data['user']
+          share.journal = Journal.objects.get(pk=journalid)
+          share.shared_with_user = User.objects.get(pk=sharedid)
+          try:
+              share.save()
+          except:
+              dupe = 'you are already sharing that journal with that user'
+              return render(request, 'tracker/update_share.html', {'form' : form , 'dupe' :dupe})
+          return HttpResponseRedirect('/tracker/')
+      else:
+          return HttpResposnseRedirect('/tracker/')
+    else:
+        form = UpdateShareForm(request.user.id)
+    return render(request, 'tracker/update_share.html', {'form' : form ,})
 
 class WeatherCalendar(LoginRequiredMixin,HTMLCalendar):
     def __init__(self, weather):
