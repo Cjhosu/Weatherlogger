@@ -24,6 +24,7 @@ class IndexView(LoginRequiredMixin, View):
             'index.html',
             context={'journal_list' :journal_list , 'shared_list' :shared_list, }
     )
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -195,6 +196,7 @@ class UpdateDateRecordView(LoginRequiredMixin, View):
             form.save()
             return HttpResponseRedirect('/tracker/date_record/'+ pk)
 
+@login_required
 def UpdateShare(request):
     if request.method == 'POST':
       form = UpdateShareForm(request.user.id, request.POST)
