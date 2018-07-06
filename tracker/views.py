@@ -181,20 +181,29 @@ class UpdateDateRecordView(LoginRequiredMixin, View):
         noteform = DateRecordNotesForm(request.POST)
         if form.is_valid() and precipform.is_valid() and noteform.is_valid():
             if precipform.cleaned_data['precip_type'] != None:
-                obj, created = Precip_record.objects.update_or_create(
-                    date_record_id = pk,
-                    defaults = {
-                    'precip_type':precipform.cleaned_data['precip_type'],
-                    'volume_in_inches':precipform.cleaned_data['volume_in_inches']
-                    })
+                precip_type = precipform.cleaned_data['precip_type']
+                volume_in_inches = precipform.cleaned_data['volume_in_inches']
+                UpdatePrecipRecord(self,request, pk, precip_type, volume_in_inches)
             if  is_note_record(request, pk) == True or noteform.cleaned_data['notes'] != '':
-                obj, created = Date_record_note.objects.update_or_create(
-                    date_record_id = pk,
-                    defaults = {
-                    'note':noteform.data['notes']
-                    })
+                note = noteform.data['notes']
+                UpdateNoteRecord(self,request,pk,note)
             form.save()
             return HttpResponseRedirect('/tracker/date_record/'+ pk)
+
+def UpdatePrecipRecord(self, request, pk, precip_type, volume_in_inches):
+    obj, created = Precip_record.objects.update_or_create(
+        date_record_id = pk,
+        defaults = {
+        'precip_type':precip_type,
+        'volume_in_inches':volume_in_inches
+        })
+
+def UpdateNoteRecord(slef, request, pk, note):
+    obj, crVeated = Date_record_note.objects.update_or_create(
+        date_record_id = pk,
+        defaults = {
+        'note':note
+        })
 
 @login_required
 def UpdateShare(request):
