@@ -5,7 +5,12 @@
 <br>
 </br>
  <h3> {{journref}} </h3>
+{% if userref == request.user %}
     <h5> Pick a Date and Log the Weather </h5>
+{% else %}
+    <h5> Adding records is disabled on journals that aren't yours </h5>
+
+{% endif %}
 <a href="{% url 'calendar' journref.pk year month %}">Calendar</a>
 <br>
 <h4>
@@ -13,6 +18,7 @@
 {% if dupe != None %}
 <h4 style="color:#ff0000"> There is already a record for that date! </h4>
 {% endif %}
+{% if userref == request.user %}
 <form method="POST" class="post-form">{% csrf_token %}
     {{ form.as_p }}
 
@@ -21,6 +27,8 @@
 <hr>
 <br>
 </h4>
+{% endif %}
+
 <h5>
 {% if records %}
     {% for daterec in records %}
