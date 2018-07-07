@@ -80,6 +80,7 @@ def CreateJournal(request):
 @login_required
 def CreateDateRecord(request,pk):
     journref = get_object_or_404(Journal, pk=pk)
+    userref = journref.user
     date_record_list = Date_record.objects.filter(journal_id= pk).order_by('-log_date')
     paginator = Paginator(date_record_list, 15)
     page = request.GET.get('page')
@@ -122,7 +123,7 @@ def CreateDateRecord(request,pk):
         form = DateRecordForm()
     return render(request,
             'tracker/create_date_record.html'
-            ,{'form' : form, 'records':records, 'journref':journref, 'year':year, 'month':month}
+            ,{'form' : form, 'records':records, 'journref':journref, 'userref':userref, 'year':year, 'month':month}
             )
 
 @login_required
