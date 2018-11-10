@@ -1,7 +1,11 @@
 {% extends "base_generic.html" %}
 {% block content %}
 <h3> Logged Weather for {{daterec.log_date}} </h3>
-<a href="{% url 'update_date_record' daterec.pk %}"<button class="btn btn-default btn-sm" type="button" style="color: #000000">Update</button></a>
+{% if journal.user == request.user %}
+  <a href="{% url 'update_date_record' daterec.pk %}"<button class="btn btn-default btn-sm" type="button" style="color: #000000">Update</button></a>
+{% else %}
+  <br>
+  <h5> Updating records is disabled on journals that aren't yours </h5>
 <br>
 <h4>
 <p><strong> High Temp:</strong> {{ daterec.high_temp }}</p>
