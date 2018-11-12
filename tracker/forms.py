@@ -71,6 +71,6 @@ class DateRangeForm(forms.Form):
     def __init__(self,uid,*args,**kwargs):
         super().__init__(*args, **kwargs)
         journ_choices = [  ]
-        for journ_options in Journal.objects.filter(Q(user_id = uid) | Q(share__shared_with_user = uid)):
+        for journ_options in Journal.objects.filter(Q(user_id = uid) | Q(share__shared_with_user = uid)).distinct():
             journ_choices.append((journ_options.id, journ_options.description))
         self.fields['journal'].choices = journ_choices
