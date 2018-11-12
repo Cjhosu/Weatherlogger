@@ -25,6 +25,7 @@
         <li><a href="{% url 'index' %}">Home</a></li>
         <li><a href="{% url 'create_journal' %}">Create a Journal</a></li>
         <li><a href="{% url 'update_share' %}">Share a Journal</a></li>
+        <li><a href="{% url 'date_range' %}">Precipitation By Date Range</a></li>
         <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
         {% else %}
         <li><strong> Please <a href="{% url 'login'%}?next={{request.path}}">Login</a> to use navigation</li>
