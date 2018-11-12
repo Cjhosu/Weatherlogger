@@ -1,4 +1,4 @@
-from .forms import SignUpForm, AddLocationForm, CreateJournalForm, DateRecordForm, UpdateDateRecordForm, DateRecordNotesForm, UpdatePrecipRecordForm, UpdateShareForm
+from .forms import DateRangeForm, SignUpForm, AddLocationForm, CreateJournalForm, DateRecordForm, UpdateDateRecordForm, DateRecordNotesForm, UpdatePrecipRecordForm, UpdateShareForm
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from .models import User, Location, Journal, Date_record, Precip_record, Date_record_note, Share
 from calendar import HTMLCalendar, monthrange
@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render, render_to_response
 from django.utils.html import conditional_escape as esc
 from django.utils.safestring import mark_safe
@@ -227,6 +228,20 @@ def UpdateShare(request):
     else:
         form = UpdateShareForm(request.user.id)
     return render(request, 'tracker/update_share.html', {'form' : form ,})
+
+@login_required
+def GetPercipByDateRange(request):
+    if request.method == 'POST':
+        form = DateRangeForm(request.user.id, request.POST)
+        if form.is_valid():
+            sd = form.cleaned_data['start_date']
+            ed = form.cleaned_data['end_date']
+            journ = form.cleaned_data['journal']
+            precip_sum = Precip_record.objects.filter(date_record__log_date__range = [sd,ed], date_record__journal = journ).values('precip_type__description').annotate(Sum('volume_in_inches'))
+            return render(request, 'tracker/date_range.html', {'form':form, 'precip_sum':precip_sum})
+    else:
+        form = DateRangeForm(request.user.id)
+    return render(request,'tracker/date_range.html', {'form':form})
 
 class WeatherCalendar(LoginRequiredMixin,HTMLCalendar):
     def __init__(self, weather):

@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^calendar/(?P<pk>\d+)/(?P<year>\d+)/(?P<month>\d+)$', views.calendar, name = 'calendar'),
     url(r'^update_date_record/(?P<pk>\d+)$', views.UpdateDateRecordView.as_view(), name = 'update_date_record'),
     url(r'^update_share', views.UpdateShare, name='update_share'),
+    url(r'^date_range', views.GetPercipByDateRange, name='date_range'),
 ]
 
 

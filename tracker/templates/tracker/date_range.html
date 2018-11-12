@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<br>
+<h3> Pick a journal and a date range to display the total precipitation </h3>
+<br>
+<form method="POST" class="post-form">{% csrf_token %}
+  {{ form.as_p }}
+    <input type="submit" value="Share"<button class="btn btn-default btn-sm" type="button" style="color:#000000"/></button> <a href="{% url 'index' %}"<button class="btn btn-default btn-sm" type="button" style="color: #000000">Cancel</button></a>
+</form>
+<br>
+{% if precip_sum %}
+  {% for record in precip_sum %}
+  <li>
+    For the date range specified there were {{record.volume_in_inches__sum}} inches of {{record.precip_type__description | lower}}
+  </li>
+  {% endfor %}
+{% endif %}
+{% endblock %}
