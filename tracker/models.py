@@ -4,12 +4,19 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 # Create your models here.
 
-
 class Location(models.Model):
     locality_name = models.CharField(max_length=255)
     zip = models.CharField(max_length=5)
+    longitude = models.FloatField(null=True)
+    latitude = models.FloatField(null=True)
     def __str__(self):
       return self.locality_name
+
+class Current_location(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
+    def __str__(self):
+      return self.location
 
 class Journal(models.Model):
     description = models.CharField(max_length=50)
