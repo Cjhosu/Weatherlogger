@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<br>
+<br>
+<div class="col-xs-12">
+<div>
+    <div>
+      {% if location_name  != None %}
+      <h2> Current Weather Deatials for {{location_name}} </h2> 
+      <a href=https://darksky.net/forecast/>Powered By Dark Sky</a>
+      <br><br>
+    <h4> <strong>
+    Temperature : {{current_temp}} <br><br>
+    Sunrise Time : {{sunrise}} <br><br>
+    Sunset Time : {{sunset}} <br><br>
+    Daylight : {{daylight}}
+      </strong> </h4>
+      {% else %} It looks like you have not set a home location.
+      {% endif %}
+        <br>
+        <br>
+    </div>
+</div>
+</div>
+{% endblock %}
