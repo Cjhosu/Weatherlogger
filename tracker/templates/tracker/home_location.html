@@ -1,0 +1,24 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<br>
+<br>
+<div class="col-xs-12">
+    <h2> Pick a Location</h2>
+    <h4> It looks like you have not set a home location.  Choose your default loaction for current weather below. </h4>
+    <br>
+<div>
+    <div class="padded" align="left">
+        <form method="POST" class="post-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+            <input type="submit" value="Submit"<button class="btn btn-default btn-sm" type="button" style="color:#000000"/></button> <a href="{% url 'index' %}"<button class="btn btn-default btn-sm" type="button" style="color: #000000">Cancel</button></a>
+        </form>
+    </div>
+    <div>
+        <br>
+        <br>
+          Location Not here? <a href="{% url 'add_location' %}"> Add it here!</a>
+    </div>
+</div>
+</div>
+{% endblock %}
