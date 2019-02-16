@@ -1,5 +1,5 @@
-from ..forms import AddLocationForm, CreateJournalForm, DateRecordForm, UpdateDateRecordForm, DateRecordNotesForm, UpdatePrecipRecordForm , UpdateShareForm, HomeLocationForm
 from ..models import User, Location, Journal, Date_record, Precip_record, Date_record_note, Share, Current_location
+from .location_views import HomeLocation
 from django.db.models.functions import Lower
 from datetime import datetime, date, timedelta
 from django.contrib.auth import login, authenticate
