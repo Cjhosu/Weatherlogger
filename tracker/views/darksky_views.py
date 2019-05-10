@@ -26,7 +26,7 @@ class CurrentWeather(LoginRequiredMixin, View):
         except:
             location = None
         if location != None:
-            data = self.call_darksky(request self.url)
+            data = self.call_darksky(request, self.url)
             current_temp = data["weatherdata"]["currently"]["temperature"]
             location_name = data["location"]["location_name"]
             sunrise = data["weatherdata"]["daily"]["data"][0]["sunriseTime"]
