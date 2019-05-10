@@ -2,6 +2,7 @@ from ..models import User, Location, Journal, Date_record, Precip_record, Date_r
 from .location_views import HomeLocation
 from django.db.models.functions import Lower
 from datetime import datetime, date, timedelta
+from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
