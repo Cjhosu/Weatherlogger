@@ -2,6 +2,7 @@ from ..models import User, Location, Journal, Date_record, Precip_record, Date_r
 from .location_views import HomeLocation
 from django.db.models.functions import Lower
 from datetime import datetime, date, timedelta
+from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
@@ -15,15 +16,17 @@ from itertools import groupby
 import json
 import requests
 
-class CurrentWeather(LoginRequiredMixin, View):
+darkskykey = settings.DARK_SKY_KEY
 
+class CurrentWeather(LoginRequiredMixin, View):
+    url = 'https://api.darksky.net/forecast/'+darkskykey+'/'
     def get(self,request):
         try:
             location = self.get_location(request)
         except:
             location = None
         if location != None:
-            data = self.call_darksky(request)
+            data = self.call_darksky(request, self.url)
             current_temp = data["weatherdata"]["currently"]["temperature"]
             location_name = data["location"]["location_name"]
             sunrise = data["weatherdata"]["daily"]["data"][0]["sunriseTime"]
@@ -43,9 +46,9 @@ class CurrentWeather(LoginRequiredMixin, View):
             loaction = None
         return location
 
-    def call_darksky(self, request):
+    def call_darksky(self, request, url):
         location = self.location_details(request)
-        response = requests.get('https://api.darksky.net/forecast/d021c6ab4940997d6a5440c4e72a1006/'+location['user_lat']+','+location['user_long']+'?exclude=minutely,hourly,alerts,flags')
+        response = requests.get(url+location['user_lat']+','+location['user_long']+'?exclude=minutely,hourly,alerts,flags')
         weatherdata = response.json()
         return ({'weatherdata':weatherdata, 'location':location})
 

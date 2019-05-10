@@ -118,6 +118,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+# API Keys
+
+DARK_SKY_KEY = os.environ['DARK_SKY_KEY']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
