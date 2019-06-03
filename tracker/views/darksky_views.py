@@ -73,6 +73,11 @@ class CurrentWeather(LoginRequiredMixin, View):
         response = requests.get(url+location['user_lat']+','+location['user_long']+'?exclude=minutely,hourly,alerts,flags')
         request.session['weatherdata'] = response.json()
         weatherdata = request.session['weatherdata']
+
+    def call_darksky(self, request, url):
+        location = self.location_details(request)
+        response = requests.get(url+location['user_lat']+','+location['user_long']+'?exclude=minutely,hourly,alerts,flags')
+        weatherdata = response.json()
         return ({'weatherdata':weatherdata, 'location':location})
 
     def location_details(self, request):
