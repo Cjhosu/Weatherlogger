@@ -20,6 +20,8 @@ darkskykey = settings.DARK_SKY_KEY
 
 class CurrentWeather(LoginRequiredMixin, View):
     url = 'https://api.darksky.net/forecast/'+darkskykey+'/'
+    now = datetime.now()
+    month = now.month
     def get(self,request):
         try:
             location = self.get_location(request)
@@ -32,28 +34,49 @@ class CurrentWeather(LoginRequiredMixin, View):
             sunrise = data["weatherdata"]["daily"]["data"][0]["sunriseTime"]
             sunset = data["weatherdata"]["daily"]["data"][0]["sunsetTime"]
             daylight = self.diff_unix(sunset,sunrise)
+            uvindex = self.get_uv_index(request)
             return render(
                 request,
                 'tracker/current_weather.html',
-                context={'location_name':location_name, 'current_temp':current_temp, 'sunrise':self.convert_unix(sunrise), 'sunset':self.convert_unix(sunset), 'daylight':daylight })
+                context={'location_name':location_name, 'current_temp':current_temp, 'sunrise':self.convert_unix(sunrise), 'sunset':self.convert_unix(sunset), 'daylight':daylight, 'uvindex':uvindex, })
         else:
             return redirect(HomeLocation)
 
     def get_location(self, request):
         try:
             location = Location.objects.get(current_location__user=request.user)
+            request.session['locid'] = location.id
         except:
             loaction = None
         return location
 
+    def is_summer(self, request):
+        if self.month in [5,6,7,8]:
+            return True
+        else:
+            return False
+
+    def get_uv_index(self, request):
+        summer = self.is_summer(request)
+        if summer == True:
+            data = request.session.get('weatherdata')
+            uvindex =  data["currently"]["uvIndex"]
+            return uvindex
+        else:
+            uvindex = 'UV Index only displayed May - Aug'
+            return uvindex
+
     def call_darksky(self, request, url):
         location = self.location_details(request)
+        #response = open("tracker/weather.json").read()
+        #weatherdata = json.loads(response)
         response = requests.get(url+location['user_lat']+','+location['user_long']+'?exclude=minutely,hourly,alerts,flags')
-        weatherdata = response.json()
+        request.session['weatherdata'] = response.json()
+        weatherdata = request.session['weatherdata']
         return ({'weatherdata':weatherdata, 'location':location})
 
     def location_details(self, request):
-        user_location = self.get_location(request)
+        user_location = Location.objects.get(id = request.session.get('locid'))
         user_long = user_location.longitude
         user_lat = user_location.latitude
         location_name = user_location.locality_name
